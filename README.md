@@ -91,6 +91,8 @@ To reload **bifröst** configuration without restarting just send a HUP signal t
 
 ## @TODO
 
+* drop root privileges
+* add multi host support
 * Add page-exception support
 * Use a better config file
 * Check/enforce post-fields values averages
