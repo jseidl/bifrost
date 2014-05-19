@@ -199,11 +199,9 @@ class ClientProtocol(protocol.Protocol):
                 mime = waf.magic.buffer(file_data)
                 mimes.append(mime)
 
-        # @FIXME THIS IS BAD!!
+        dataset = self.fetch_set('uploads', 'mimetype', None, path_only = True)
         for mime in set(mimes):
-            waf.cursor.execute("SELECT mimetype FROM uploads WHERE path = ? AND mimetype = ? LIMIT 1", (self.client_request.path, mime))
-            _mime = waf.cursor.fetchone()
-            if _mime is None:
+            if mime is dataset:
                 print bcolors.WARNING + "[ANOMALY] File mimetype '%s' not allowed on requests for this URL ('%s')." % (mime, self.client_request.path) + bcolors.ENDC
                 return False
 
@@ -211,12 +209,11 @@ class ClientProtocol(protocol.Protocol):
 
 
     def valid_post(self, post_keys, r_type):
-        # @FIXME THIS IS BAD!!
+
+        dataset = self.fetch_set('postdata', 'field', None, path_only = True)
         for post in post_keys:
             post_name = post.strip().lower()
-            waf.cursor.execute("SELECT field FROM postdata WHERE path = ? AND field = ? LIMIT 1", (self.client_request.path, post_name))
-            _field = waf.cursor.fetchone()
-            if _field is None:
+            if post_name not in dataset:
                 print bcolors.WARNING + "[ANOMALY] POST field '%s' not allowed on %s for this URL ('%s')." % (post_name, 'requests' if r_type == 'req' else 'responses', self.client_request.path) + bcolors.ENDC
                 return False
 
@@ -224,12 +221,11 @@ class ClientProtocol(protocol.Protocol):
 
 
     def valid_headers(self, header_keys, r_type):
-        # @FIXME THIS IS BAD!!
+
+        dataset = self.fetch_set('headers', 'header', r_type)
         for header in header_keys:
             header_name = header.strip().lower()
-            waf.cursor.execute("SELECT header FROM headers WHERE path = ? AND method = ? AND header = ? AND type = ? LIMIT 1", (self.client_request.path, self.client_request.command, header_name, r_type))
-            _header = waf.cursor.fetchone()
-            if _header is None:
+            if header_name not in dataset:
                 print bcolors.WARNING + "[ANOMALY] Header '%s' not allowed on %s for this URL/method ('%s','%s')." % (header_name, 'requests' if r_type == 'req' else 'responses', self.client_request.command, self.client_request.path) + bcolors.ENDC
                 return False
 
@@ -237,18 +233,27 @@ class ClientProtocol(protocol.Protocol):
 
     def valid_cookies(self, cookie_str, r_type):
 
-        # @FIXME THIS IS BAD!!
         ck = Cookie.SimpleCookie()
         ck.load(cookie_str)
+        dataset = self.fetch_set('cookies', 'cookie', r_type)
         for cookie in ck.keys():
             cookie_name = cookie.strip().lower()
-            waf.cursor.execute("SELECT cookie FROM cookies WHERE path = ? AND method = ? AND cookie = ? AND type = ? LIMIT 1", (self.client_request.path, self.client_request.command, cookie_name, r_type))
-            _cookie = waf.cursor.fetchone()
-            if _cookie is None:
+            if cookie_name not in dataset:
                 print bcolors.WARNING + "[ANOMALY] Cookie '%s' not allowed on %s for this URL/method ('%s','%s')." % (cookie_name, 'requests' if r_type == 'req' else 'responses', self.client_request.command, self.client_request.path) + bcolors.ENDC
                 return False
 
         return True
+    def fetch_set(self, table, field, r_type, path_only=False):
+
+        items = []
+        if path_only:
+            cursor = waf.cursor.execute("SELECT %s FROM %s WHERE path = ?" % (field, table), (self.client_request.path,))
+        else:
+            cursor = waf.cursor.execute("SELECT %s FROM %s WHERE path = ? and method = ? AND type = ?" % (field, table), (self.client_request.path, self.client_request.command, r_type))
+        for row in cursor:
+            items.append(row[0])
+
+        return set(items)
 
     def fetch_averages(self, path, r_type):
 
