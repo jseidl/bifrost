@@ -89,5 +89,7 @@ To reload **bifröst** configuration without restarting just send a HUP signal t
 * Use a better config file
 * Check/enforce post-fields values averages
 * Add RFC compliance check
+* Drop connection more gracefully
+* Fix multiple database calls (caching?)
 * Make it all faster
-* Kill all the remaining bugs :D
+* Kill all the remaining bugs :D (Specially all the @FIXMEs)
