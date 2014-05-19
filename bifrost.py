@@ -201,7 +201,7 @@ class ClientProtocol(protocol.Protocol):
 
         dataset = self.fetch_set('uploads', 'mimetype', None, path_only = True)
         for mime in set(mimes):
-            if mime is dataset:
+            if mime not in dataset:
                 print bcolors.WARNING + "[ANOMALY] File mimetype '%s' not allowed on requests for this URL ('%s')." % (mime, self.client_request.path) + bcolors.ENDC
                 return False
 
@@ -243,6 +243,7 @@ class ClientProtocol(protocol.Protocol):
                 return False
 
         return True
+
     def fetch_set(self, table, field, r_type, path_only=False):
 
         items = []
