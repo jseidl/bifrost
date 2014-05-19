@@ -78,6 +78,12 @@ Determines which score values will mark a request as a threat.
 * response_threshold = 15
 * request_threshold = 15
 
+## Usage
+
+Bifröst will be in the middle of your connection just like a reverse proxy would. Put it on training mode and it will start learning your pages' profiles then switch (in the configuration) to operational mode and give it a HUP signal.
+
+All ready! (if not, train more!)
+
 ## Extra
 To reload **bifröst** configuration without restarting just send a HUP signal to it.
 
