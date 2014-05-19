@@ -37,7 +37,7 @@ This holds general configuration information for the WAF
 
 ### Analyzer
 This section enables and configures the various analyzer settings.
-The range comparators can be min/max range [range] or average [avg] (plus tolerance).
+The range comparators can be min/max range [range] or average [avg], plus tolerance.
 
 * request\_content\_size, [range, avg] verifies the Request's content-size 
 * response\_content\_size, [range, avg] verifies the Response's content-size 
