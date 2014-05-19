@@ -8,7 +8,7 @@ EFFORTS MAY STILL CONTAIN MANY BUGS. **USE IT AT YOUR OWN RISK**
 
 This WEB APPLICATION FIREWALL (WAF) uses its learning mode to gather a profile of the requested page. It analyzes and learns several parameters such as post fields, request/response content-size, response header count and size, file mimetypes and such to create a locked down whitelist to each page in each HTTP method provided.
 
-Watch the [demo on youtube](https://www.youtube.com/watch?v=qjzeJbAGgBo).
+Watch the [demo on YouTube](https://www.youtube.com/watch?v=qjzeJbAGgBo).
 
 ## How it works?
 It analyzes the request and response headers and body, parses lots of things and compares to learnt data to check if the request or response is under conformity with the known behavior of these URLs.
@@ -23,8 +23,8 @@ Each anomaly detected adds up to the *threat score* (configurable) and when it r
 * Edit your DNS/hosts entries
 * Run ./bifrost.py 
 
-**If you want to run in privileged ports (<1024) you'll need to run as root (sudo ./bifrost.py).
-BIFRÖST DOES NOT DO PRIVILEGE DROP YET! BEWARE!! **
+*If you want to run in privileged ports (<1024) you'll need to run as root (sudo ./bifrost.py).*
+**BIFRÖST DOES NOT DO PRIVILEGE DROP YET! BEWARE!! **
 
 ## Configuration
 ### General section
