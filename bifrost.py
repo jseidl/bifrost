@@ -39,23 +39,6 @@ ACTION_PASS = 2
 
 CHUNK_END = '0\r\n\r\n'
 
-HTTP_ERR_403 = 'HTTP/1.1 403 Forbidden\n\
-Content-type: text/html\n\
-Content-length: 112\n\
-\n\
-<html><head><title>Forbidden</title></head><body>\n\
-Sorry, the object you requested is unavailable.\n\
-</body></html>\n\n'
-
-
-HTTP_ERR_404 = 'HTTP/1.1 404 Not Found\n\
-Content-type: text/html\n\
-Content-length: 111\n\
-\n\
-<html><head><title>Not Found</title></head><body>\n\
-Sorry, the object you requested was not found.\n\
-</body></html>\n\n'
-
 #######################################
 # Imports
 #######################################
