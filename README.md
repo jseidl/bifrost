@@ -26,7 +26,7 @@ Each anomaly detected adds up to the *threat score* (configurable) and when it r
 *If you want to run in privileged ports (<1024) you'll need to run as root (sudo ./bifrost.py).*
 **BIFRÖST DOES NOT DO PRIVILEGE DROP YET! BEWARE!!**
 
-As an alternative, you might give [authbind](http://mutelight.org/authbind) a try.
+As an alternative, you might give [authbind](http://mutelight.org/authbind) a try to allow bifröst to bind to privileged ports as an unprivileged user.
 
 ## Configuration
 ### General section
