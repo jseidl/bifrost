@@ -77,3 +77,17 @@ Determines which score values will mark a request as a threat.
 
 * response_threshold = 15
 * request_threshold = 15
+
+## Extra
+To reload **bifröst** configuration without restarting just send a HUP signal to it.
+
+    kill -s HUP $(ps aux | grep 'sudo ./bifrost.py' | grep -v grep | cut -d' ' -f6)
+
+## @TODO
+
+* Add page-exception support
+* Use a better config file
+* Check/enforce post-fields values averages
+* Add RFC compliance check
+* Make it all faster
+* Kill all the remaining bugs :D
