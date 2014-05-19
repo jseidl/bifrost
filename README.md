@@ -2,9 +2,9 @@
 
 Intelligent Self-Learning Whitelist-based Web Application Firewall
 
-THIS PROJECT IS IN EARLY DEVELOPMENT STAGE AND IS *NOT* READY FOR PRODUCTION.
+THIS PROJECT IS IN EARLY DEVELOPMENT STAGE AND IS **NOT** READY FOR PRODUCTION.
 IF YOU RUN THIS, EXPECT THE WORSE. IT'S STILL VERY UNTESTED AND DESPITE ALL 
-EFFORTS MAY STILL CONTAIN MANY BUGS. *USE IT AT YOUR OWN RISK*
+EFFORTS MAY STILL CONTAIN MANY BUGS. **USE IT AT YOUR OWN RISK**
 
 This WEB APPLICATION FIREWALL (WAF) uses its learning mode to gather a profile of the requested page. It analyzes and learns several parameters such as post fields, request/response content-size, response header count and size, file mimetypes and such to create a locked down whitelist to each page in each HTTP method provided.
 
@@ -19,6 +19,7 @@ Each anomaly detected adds up to the *threat score* (configurable) and when it r
 
 * Checkout the repository
 * Edit bifrost.conf (see below)
+* Copy bifrost.db.orig to bifrost.db
 * Edit your DNS/hosts entries
 * Run ./bifrost.py 
 
