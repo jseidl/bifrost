@@ -57,11 +57,12 @@ from twisted.python import log
 #######################################
 
 def in_range(minval, maxval, value, tolerance):
+    value = float(value)
     tolerance = float(tolerance)
-    maxval = int(maxval)
-    minval = int(minval)
+    maxval = float(maxval)
+    minval = float(minval)
     maxval += (maxval*tolerance)
-    minval += (minval*tolerance)
+    minval -= (minval*tolerance)
     return (minval <= value <= maxval)
 
 def in_average(mean, value, tolerance):
@@ -69,7 +70,7 @@ def in_average(mean, value, tolerance):
     threshold = (mean*tolerance)
     maxval = (mean+threshold)
     minval = (mean-threshold)
-    return in_range(minval, maxval, value, 0)
+    return in_range(minval, maxval, value, 0.0)
 
 # http://stackoverflow.com/questions/287871/print-in-terminal-with-colors-using-python 
 class bcolors:
@@ -244,6 +245,18 @@ class ClientProtocol(protocol.Protocol):
 
         return True
 
+    def valid_range(self, name, ranges, value):
+
+        tolerance = waf.config.get('tolerance', name)
+        ret = True
+
+        if waf.config.get('analyzer', name) == 'avg':
+            ret = in_average(ranges[2], value, tolerance)
+        else:
+            ret = in_range(ranges[0], ranges[1], value, tolerance)
+
+        return ret
+
     def fetch_set(self, table, field, r_type, path_only=False):
 
         items = []
@@ -294,16 +307,9 @@ class ClientProtocol(protocol.Protocol):
         averages = self.fetch_averages(path, 'req')
 
         # Content SIZE
-        avgs = averages[6:9]
-        ret = True
         header_size = len(str(request.headers))
         content_size = (len(self.request_buffer)-header_size)
-        tolerance = waf.config.get('tolerance', 'response_content_size')
-        if waf.config.get('analyzer', 'response_content_size') == 'avg':
-            ret = in_average(avgs[2], content_size, tolerance)
-        else:
-            ret = in_range(avgs[0], avgs[1], content_size, tolerance)
-        if not ret:
+        if not self.valid_range('request_content_size', averages[6:9], content_size):
             print bcolors.WARNING + "[ANOMALY] URL '%s' has an unexpected request content size (%d)." % (path, content_size) + bcolors.ENDC
             score += waf.config.getint('scorer', 'request_content_size')
 
@@ -359,41 +365,21 @@ class ClientProtocol(protocol.Protocol):
         score = 0
 
         # Header QTY
-        avgs = averages[0:3]
-        ret = True
         header_qty = len(response.headers)
-        tolerance = waf.config.get('tolerance', 'response_header_qty')
-        if waf.config.get('analyzer', 'response_header_qty') == 'avg':
-            ret = in_average(avgs[2], header_qty, tolerance)
-        else:
-            ret = in_range(avgs[0], avgs[1], header_qty, tolerance)
-        if not ret:
+
+        if not self.valid_range('response_header_qty', averages[0:3], header_qty):
             print bcolors.WARNING + "[ANOMALY] URL '%s' has an unexpected response header quantity (%d)." % (path, header_qty) + bcolors.ENDC
             score += waf.config.getint('scorer', 'response_header_qty')
 
         # Header SIZE
-        avgs = averages[3:6]
-        ret = True
         header_size = len(str(response.headers))
-        tolerance = waf.config.get('tolerance', 'response_header_size')
-        if waf.config.get('analyzer', 'response_header_size') == 'avg':
-            ret = in_average(avgs[2], header_size, tolerance)
-        else:
-            ret = in_range(avgs[0], avgs[1], header_size, tolerance)
-        if not ret:
+        if not self.valid_range('response_header_size', averages[3:6], header_size):
             print bcolors.WARNING + "[ANOMALY] URL '%s' has an unexpected response header size (%d)." % (path, header_size) + bcolors.ENDC
             score += waf.config.getint('scorer', 'response_header_size')
 
         # Content SIZE
-        avgs = averages[6:9]
-        ret = True
         content_size = (len(self.response_buffer)-header_size)
-        tolerance = waf.config.get('tolerance', 'response_content_size')
-        if waf.config.get('analyzer', 'response_content_size') == 'avg':
-            ret = in_average(avgs[2], content_size, tolerance)
-        else:
-            ret = in_range(avgs[0], avgs[1], content_size, tolerance)
-        if not ret:
+        if not self.valid_range('response_content_size', averages[6:9], content_size):
             print bcolors.WARNING + "[ANOMALY] URL '%s' has an unexpected response content size (%d)." % (path, content_size) + bcolors.ENDC
             score += waf.config.getint('scorer', 'response_content_size')
 
