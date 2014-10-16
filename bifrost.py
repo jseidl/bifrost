@@ -11,13 +11,7 @@
 #  8Y"Ybbd8"'  88   88    88          `"YbbdP"'  `"YbbdP"'   "Y888  
 #
 #  INTELLIGENT WEB APPLICATION FIREWALL
-#  by: Jan Seidl
-#
-#  THIS IS PRE-ALPHA SOFTWARE
-#  IT'S BUGGY, FALSE-POSITIVE-Y AND SUCH
-#  DO *NOT* USE THIS IN PRODUCTION
-#  - I repeat -
-#  DO ->*NOT*<- USE THIS IN PRODUCTION
+#  by: Jan Seidl <jseidl@wroot.org>
 #
 
 # Global WAF instance
